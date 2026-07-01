@@ -1,0 +1,229 @@
+ <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Chat AI</title>
+</head>
+<body>
+  <div class="app" id="app">
+    <!-- DRAG OVERLAY -->
+    <div class="drag-overlay" id="drag-overlay">
+      <i class="ti ti-upload"></i>
+      <span>أفلت الملف هنا</span>
+    </div>
+
+    <!-- SIDEBAR MOBILE OVERLAY -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeMobileSidebar()" style="display:none"></div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <div class="logo-icon"><i class="ti ti-brand-openai"></i></div>
+          <span>Chat AI</span>
+        </div>
+        <button class="new-chat-btn" onclick="newChat()">
+          <i class="ti ti-plus"></i>
+          <span>محادثة جديدة</span>
+        </button>
+        <div class="search-box">
+          <i class="ti ti-search"></i>
+          <input type="text" placeholder="ابحث في المحادثات..." id="search-input" oninput="renderSidebar()">
+        </div>
+      </div>
+      <div class="chats-list" id="chats-list"></div>
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-row">
+          <button class="sidebar-footer-btn" onclick="openSystemPromptModal()" title="System Prompt">
+            <i class="ti ti-settings-2"></i>
+          </button>
+          <button class="sidebar-footer-btn" onclick="openStatsModal()" title="إحصائيات">
+            <i class="ti ti-chart-bar"></i>
+          </button>
+          <button class="sidebar-footer-btn" onclick="toggleTheme()" title="تبديل السمة" id="theme-btn">
+            <i class="ti ti-moon"></i>
+          </button>
+          <button class="sidebar-footer-btn" onclick="openShortcutsModal()" title="اختصارات لوحة المفاتيح">
+            <i class="ti ti-keyboard"></i>
+          </button>
+        </div>
+        <div class="sidebar-credit">Chat AI — Made by <span>Amany</span> 2026</div>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="top-bar">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+          <i class="ti ti-layout-sidebar"></i>
+        </button>
+        <span class="chat-title-bar" id="chat-title-bar">Chat AI</span>
+        <div class="top-bar-actions">
+          <div style="position:relative">
+            <button class="top-action-btn" onclick="toggleExportMenu()" title="تصدير المحادثة" id="export-btn">
+              <i class="ti ti-download"></i>
+            </button>
+            <div class="export-menu hidden" id="export-menu">
+              <div class="export-menu-item" onclick="exportChat('md')"><i class="ti ti-markdown"></i> Markdown</div>
+              <div class="export-menu-item" onclick="exportChat('txt')"><i class="ti ti-file-text"></i> نص عادي</div>
+              <div class="export-menu-item" onclick="exportChat('json')"><i class="ti ti-code"></i> JSON</div>
+              <div class="export-menu-item" onclick="shareChat()"><i class="ti ti-share"></i> مشاركة</div>
+            </div>
+          </div>
+          <button class="top-action-btn" onclick="toggleChatSearch()" title="بحث في المحادثة">
+            <i class="ti ti-search"></i>
+          </button>
+          <button class="top-action-btn" onclick="clearCurrentChat()" title="مسح المحادثة">
+            <i class="ti ti-trash"></i>
+          </button>
+        </div>
+        <span class="model-badge">
+          <i class="ti ti-bolt"></i>
+          <span>Groq · Llama 3.3</span>
+        </span>
+      </div>
+
+      <!-- CHAT SEARCH BAR -->
+      <div class="chat-search-bar hidden" id="chat-search-bar">
+        <i class="ti ti-search" style="color:var(--text3)"></i>
+        <input type="text" placeholder="ابحث في الرسائل..." id="chat-search-input" oninput="searchInChat()">
+        <span class="results-count" id="search-results-count"></span>
+        <button class="icon-btn" onclick="toggleChatSearch()" style="font-size:16px"><i class="ti ti-x"></i></button>
+      </div>
+
+      <div class="main-content">
+        <!-- EMPTY STATE -->
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon"><i class="ti ti-message-circle-2"></i></div>
+          <h2>كيف يمكنني مساعدتك؟</h2>
+          <p>اكتب رسالة، أرسل صورة أو ملف، أو استخدم الميكروفون</p>
+          <div class="suggestions">
+            <button class="sug-btn" onclick="fillMsg('اشرح لي الذكاء الاصطناعي ببساطة')">
+              <i class="ti ti-brain"></i> اشرح الذكاء الاصطناعي
+            </button>
+            <button class="sug-btn" onclick="fillMsg('اكتب كود Python لفرز قائمة')">
+              <i class="ti ti-code"></i> كود Python
+            </button>
+            <button class="sug-btn" onclick="fillMsg('اكتب لي إيميل احترافي')">
+    <i class="ti ti-mail"></i> كتابة إيميل
+</button>
+          <button class="sug-btn" onclick="fillMsg('حلل هذا الملف PDF')">
+    <i class="ti ti-file-type-pdf"></i> تحليل PDF
+</button>
+          </div>
+        </div>
+
+        <!-- MESSAGES -->
+        <div class="messages-area hidden" id="messages-area" style="position:relative"></div>
+
+        <!-- FOLLOW-UP SUGGESTIONS -->
+        <div class="followup-area hidden" id="followup-area">
+          <div class="followup-chips" id="followup-chips"></div>
+        </div>
+      </div>
+
+      <!-- INPUT -->
+      <div class="input-area">
+        <div class="input-wrapper">
+          <div id="api-notice" class="api-notice hidden">
+            <i class="ti ti-alert-triangle"></i>
+            <span>أضف Groq API Key في script.js — <a href="https://console.groq.com" target="_blank">احصل عليه مجاناً</a></span>
+          </div>
+          <div class="attach-preview hidden" id="attach-preview"></div>
+          <div class="input-box">
+            <button class="icon-btn" onclick="document.getElementById('file-in').click()" title="إرفق ملف أو صورة">
+              <i class="ti ti-paperclip"></i>
+            </button>
+            <input type="file" id="file-in" accept="*/*" multiple style="display:none" onchange="attachFile(this)">
+            <textarea id="msg-input" placeholder="اكتب رسالتك هنا..." rows="1"
+              oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"
+              onkeydown="handleInputKeydown(event)"></textarea>
+            <button class="icon-btn record-btn" id="rec-btn" onclick="toggleRec()" title="تسجيل صوت">
+              <i class="ti ti-microphone"></i>
+            </button>
+            <button class="send-btn" id="send-btn" onclick="sendMsg()" title="إرسال">
+              <i class="ti ti-arrow-up"></i>
+            </button>
+          </div>
+          <div class="input-toolbar">
+            <button class="toolbar-btn" id="sys-prompt-chip" onclick="openSystemPromptModal()">
+              <i class="ti ti-settings-2"></i> <span id="sys-prompt-label">System Prompt</span>
+            </button>
+            <button class="toolbar-btn" onclick="openPromptLibrary()">
+              <i class="ti ti-library"></i> مكتبة الـ Prompts
+            </button>
+          </div>
+          <p class="hint">Enter للإرسال · Shift+Enter لسطر جديد · Ctrl+K بحث · Ctrl+N محادثة جديدة</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RENAME MODAL -->
+    <div class="modal-overlay hidden" id="modal">
+      <div class="modal">
+        <h3>إعادة تسمية المحادثة</h3>
+        <input type="text" id="rename-input" placeholder="اسم جديد...">
+        <div class="modal-btns">
+          <button class="btn-s" onclick="closeModal()">إلغاء</button>
+          <button class="btn-p" onclick="doRename()">حفظ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SYSTEM PROMPT MODAL -->
+    <div class="modal-overlay hidden" id="sys-modal">
+      <div class="modal">
+        <h3>System Prompt</h3>
+        <label>تخصيص شخصية المساعد</label>
+        <textarea id="sys-input" placeholder="مثال: أنت مساعد متخصص في البرمجة. أجب دائماً بالعربية وقدم أمثلة عملية..." rows="5"></textarea>
+        <div class="modal-btns">
+          <button class="btn-s" onclick="closeSysModal()">إلغاء</button>
+          <button class="btn-p" onclick="saveSysPrompt()">حفظ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMPT LIBRARY MODAL -->
+    <div class="modal-overlay hidden" id="prompt-modal">
+      <div class="modal" style="min-width:380px">
+        <h3>مكتبة الـ Prompts</h3>
+        <div id="prompt-list" style="display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto;margin-bottom:14px"></div>
+        <div class="modal-btns">
+          <button class="btn-s" onclick="closePromptModal()">إغلاق</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS MODAL -->
+    <div class="modal-overlay hidden" id="stats-modal">
+      <div class="modal">
+        <h3>إحصائيات المحادثات</h3>
+        <div class="stats-grid" id="stats-grid"></div>
+        <div class="modal-btns">
+          <button class="btn-p" onclick="closeStatsModal()">حسناً</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHORTCUTS MODAL -->
+    <div class="modal-overlay hidden" id="shortcuts-modal">
+      <div class="modal">
+        <h3>اختصارات لوحة المفاتيح</h3>
+        <div id="shortcuts-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px"></div>
+        <div class="modal-btns">
+          <button class="btn-p" onclick="closeShortcutsModal()">حسناً</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toast-container"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

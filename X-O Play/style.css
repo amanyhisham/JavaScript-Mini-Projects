@@ -1,0 +1,95 @@
+*{
+    padding:0;
+    margin:0;
+    box-sizing:border-box;
+    font-family: 'Segoe UI', sans-serif;
+    color:white;
+}
+body{
+    background-color: #0A0519;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+header{
+    display: flex;
+    justify-content: space-between;
+   width: 235px;
+    margin-bottom: 20px;
+    
+}
+header .title{
+   
+    align-self: center;
+ }
+header .x-player,header .o-player{
+    background-color: #17122A;
+    width:60px;
+    height:60px;
+border-radius: 10px;
+display:flex;
+justify-content: center;
+align-items: center;
+ font-size: 30px;
+    font-weight: bold;
+    cursor:pointer;
+    border:solid 4px #17122A;
+     transition: 0.3s border;
+}
+header .x-player:hover,header .o-player:hover{
+    border:solid 4px #2A2343;
+    
+}
+header .x-player{
+    color:#1892EA;
+ }
+header .o-player{
+    color:#A737FF;
+ }
+.board{
+display:grid;
+grid-template-columns:repeat(3,70px);
+grid-template-rows:repeat(3,70px);
+gap:12px;
+}
+.board .cell{
+    background-color: #17122A;
+    border-radius: 13px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s background-color;
+}
+.board .cell:hover{
+    background-color: #2A2343;
+}
+ .reset-button{
+    margin-top: 30px;
+    width:235px;
+    background: #17122A;
+    font-size: 18px;
+    font-weight: 600;
+    color:white;
+    padding-top:10px ;
+    padding-bottom: 10px;
+    border:none;
+    border-radius: 10px;
+    transition: 0.3s background-color;
+}
+.reset-button:hover{
+    background-color: #2A2343;
+}
+/* الضوء لما الدور على X */
+.x-player.active {
+    box-shadow: 0 0 10px 3px #1892EA; /* ضوء أزرق أخف */
+}
+
+/* الضوء لما الدور على O */
+.o-player.active {
+    box-shadow: 0 0 10px 3px #A737FF; /* ضوء بنفسجي أخف */
+}

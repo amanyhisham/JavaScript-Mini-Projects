@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>X O player</title>
+</head>
+<body>
+    <header>
+        <div class="x-player"  onclick="chooseTurn('x')">X</div>
+        <h3  class="title" id="title">Choose</h3>
+        <div class="o-player" onclick="chooseTurn('o')">O</div>
+    </header>
+    <div class=" board">
+        <div class="cell" id="item1" onclick="Game(this.id)"></div>
+        <div class="cell" id="item2" onclick="Game(this.id)"></div>
+        <div class="cell" id="item3" onclick="Game(this.id)"></div>
+        <div class="cell" id="item4" onclick="Game(this.id)"></div>
+        <div class="cell" id="item5" onclick="Game(this.id)"></div>
+        <div class="cell" id="item6" onclick="Game(this.id)"></div>
+        <div class="cell" id="item7" onclick="Game(this.id)"></div>
+        <div class="cell" id="item8" onclick="Game(this.id)"></div>
+        <div class="cell" id="item9" onclick="Game(this.id)"></div>
+    </div>
+    <button class="reset-button" onclick="Reset()">Reset Game</button>
+    <script src="script.js"></script>
+</body>
+</html>
