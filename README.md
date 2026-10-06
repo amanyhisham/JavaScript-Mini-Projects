@@ -21,7 +21,7 @@ Each project is hosted on Vercel and can be tried directly in the browser.
 
 ---
 
-## Technologies
+## Technologies:
 
 `HTML5` &nbsp;·&nbsp; `CSS3` &nbsp;·&nbsp; `JavaScript`
 
